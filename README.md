@@ -1,11 +1,9 @@
-# Compiler-Construction
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-
+using System.Text.RegularExpressions;
 namespace filing
 {
 
@@ -17,7 +15,7 @@ namespace filing
         static int line_no_keywords=0;
         string[] KeywordsArray = { "If", "Else", "Act", "Until", "Loop", "Array", "Fresh", "Wh", "Dec", "Ribbon", "Ch" ,"Common","Personal","Secure"};
         string[] Punctuator_Array = { ",", "->", "~", "^", "<<", ">>" };
-        char[] wordbreakers = {'1','2','3','4','5','6','7','8','9','0','-','+','*','/','>','<','!','@','$','%','^','&','(',')','{','}','[',']','=','~','^','\n' };
+        char[] wordbreakers = {'-','+','*','/','>','<','!','@','$','%','^','&','(',')','{','}','[',']','=','~','^','\n' };
 
 
         public void Breaker()
@@ -52,36 +50,40 @@ namespace filing
                     for (int i = 0; i < temp_array.Length - 1; i++)
                     {
 
-                        if ((temp_array[i] >= 65) && (temp_array[i] <= 90))//for keywords
-                        {
-                          //  string temp = "";
-                           // char ch = temp_array[i];
-                           // while (!wordbreakers.Contains(ch) && i < temp_array.Length)
-                            //{
-                               // temp += temp_array[i].ToString();
-                              //  ch = temp_array[i + 1];
-                                //i++;
-                            //?
-                            //Console.WriteLine(temp);
-                        }
+                        //if ((temp_array[i] >= 65) && (temp_array[i] <= 90))//for keywords
+                        //{
+                        //  //  string temp = "";
+                        //   // char ch = temp_array[i];
+                        //   // while (!wordbreakers.Contains(ch) && i < temp_array.Length)
+                        //    //{
+                        //       // temp += temp_array[i].ToString();
+                        //      //  ch = temp_array[i + 1];
+                        //        //i++;
+                        //    //?
+                        //    //Console.WriteLine(temp);
+                        //}
 
-                        else if (temp_array[i] == '#')//check variable
+                         if (temp_array[i] == '#')//check variable
                         {
-                           
+
                             string temp = "";
                             char ch = temp_array[i];
-                         while(!wordbreakers.Contains(ch) &&i<temp_array.Length) //revolutionary line of code
-                        //   while (ch != '/'&&ch != '=' && ch != '<' && ch != '!' && ch != '>' && ch!='+' && i < temp_array.Length)//<>(){}[],./!#$%^&*
+                            while (!wordbreakers.Contains(ch) && i < temp_array.Length) //revolutionary line of code
+                            //   while (ch != '/'&&ch != '=' && ch != '<' && ch != '!' && ch != '>' && ch!='+' && i < temp_array.Length)//<>(){}[],./!#$%^&*
                             {
                                 temp += temp_array[i].ToString();
-                                ch = temp_array[i+1];A
+                                ch = temp_array[i + 1];
                                 i++;
 
                             }
 
-                            Console.WriteLine('('+"Identifier"+','+ temp+','+line_no+")");//Remove when Inam sends RE
+                            Console.WriteLine('(' + "Identifier" + ',' + temp + ',' + line_no + ")");//Remove when Inam sends RE
 
 
+                        }
+                        else
+                        {
+                            Console.WriteLine("Lexical Error at" + line_no);
                         }
 
 
@@ -101,7 +103,9 @@ namespace filing
 
         public void CheckID(string ID)
         {
-
+            Regex regex = new Regex(@"\d+");
+           
+            
 
         }
 
