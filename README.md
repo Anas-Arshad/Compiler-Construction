@@ -5,7 +5,7 @@ using System.Text;
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace filing
+namespace Nascent
 {
 
     class Compiler
@@ -13,33 +13,33 @@ namespace filing
 
 
         static public int line_no = 0;
-       // static int line_no_keywords = 0;
+        // static int line_no_keywords = 0;
         string[] KeywordsArray = { "If", "Else", "Act", "Until", "Loop", "Array", "Fresh", "Wh", "Dec", "Ribbon", "Ch", "Common", "Personal", "Secure" };
         string[] Punctuator_Array = { ",", "->", "~", "^", "<<", ">>" };
-        char[] wordbreakers = { '-', '+', '*', '/', '>', '<', '!', '@', '$', '%', '^', '&', '(', ')', '{', '}', '[', ']', '=', '~', '^', '\n', ' ' };
-        
-        
+        char[] wordbreakers = { '-', '+', '*', '/', '>', '<', '!', '@', '$', '^', '&', '(', ')', '{', '}', '[', ']', '=', '~', '^', '\n', ' ' };
+
+
 
         public void Breaker()
         {
 
 
-
+           
             //Console.WriteLine(KeywordsArray.Length);
-            char[] delimiter = { '\n',' ' };
+            char[] delimiter = { '\n', ' ' };
 
-            StreamReader reader = new StreamReader(@"C:\Users\monis\Desktop\ReadMe.txt");
-            StreamReader reader_for_keywords = new StreamReader(@"C:\Users\monis\Desktop\ReadMe.txt");
+            StreamReader reader = new StreamReader(@"C:\Users\ana\Desktop\ReadMe.txt");
+            StreamReader reader_for_keywords = new StreamReader(@"C:\Users\ana\Desktop\ReadMe.txt");
             while (!reader.EndOfStream)
             {
                 //string[] keywords = reader_for_keywords.ReadLine().Split(wordbreakers);//keywords
                 //line_no_keywords++;
-        //        foreach (string word in keywords)
-          //      {
-            //        CheckKeyword(word);
+                //        foreach (string word in keywords)
+                //      {
+                //        CheckKeyword(word);
 
 
-              //  }
+                //  }
 
 
 
@@ -47,11 +47,11 @@ namespace filing
 
 
                 line_no++;
-                
+
 
                 foreach (string word in words)
                 {
-                    
+
                     //char[] temp_array = word.ToCharArray();
                     //List<char> t = temp_array.ToList<char>();
                     List<char> temp_array = word.ToList<char>();
@@ -59,49 +59,55 @@ namespace filing
                     for (int i = 0; i < temp_array.Count; i++)
                     {
 
-
-
-                        //        if ((temp_array[i] >= 65) && (temp_array[i] <= 90))//for keywords
-                        //      {
-                        //  string temp = "";
-                        // char ch = temp_array[i];
-                        // while (!wordbreakers.Contains(ch) && i < temp_array.Length)
-                        //{
-                        // temp += temp_array[i].ToString();
-                        //  ch = temp_array[i + 1];
-                        //i++;
-                        //?
-                        //Console.WriteLine(temp);
-                        //    }
-
-                       
-
-                        if ( temp_array[i] >= 65 && temp_array[i] <= 90)//kEYWORDS
+                        if (temp_array[i] >= 65 && temp_array[i] <= 90)//kEYWORDS
                         {
                             bool flag = false;
                             string temp = "";
                             char ch = temp_array[i];
                             int a = i;
-                            
+
                             while (!wordbreakers.Contains(ch) && a < temp_array.Count) //revolutionary line of code
-                           
                             {
                                 temp += temp_array[a].ToString();
                                 if (a + 1 < temp_array.Count)
-                                
-                                    ch = temp_array[a + 1];
-                                   
-                                a++;
-                                
-                            }
-                            i = a-1;
-                          
-                            
-                            CheckKeyword(temp);
-                          
-                        }
 
-                        else if (temp_array[i] == '#' && i<temp_array.Count)//check variable
+                                    ch = temp_array[a + 1];
+
+                                a++;
+
+                            }
+                            i = a - 1;
+
+
+                            CheckKeyword(temp);
+
+                        }
+                        else
+                            if (temp_array[i] >= 97 && temp_array[i] <= 127)//kEYWORDS
+                            {
+                                bool flag = false;
+                                string temp = "";
+                                char ch = temp_array[i];
+                                int a = i;
+
+                                while (!wordbreakers.Contains(ch) && a < temp_array.Count) //revolutionary line of code
+                                {
+                                    temp += temp_array[a].ToString();
+                                    if (a + 1 < temp_array.Count)
+
+                                        ch = temp_array[a + 1];
+
+                                    a++;
+
+                                }
+                                i = a - 1;
+
+
+                                CheckID(temp);
+
+                            }
+
+                        else if (temp_array[i] == '#' && i < temp_array.Count)//check variable
                         {
                             bool flag = false;
                             string temp = "";
@@ -114,7 +120,10 @@ namespace filing
 
                                 temp += temp_array[a].ToString();
                                 if (a + 1 < temp_array.Count)
+                                {
                                     ch = temp_array[a + 1];
+
+                                }
                                 if (ch == '$')
                                 {
                                     flag = true;
@@ -126,10 +135,18 @@ namespace filing
                             CheckID(temp);
                             if (flag == true)
                             {
-                                Console.WriteLine("(Terminator,$, " + line_no);
+                                Console.WriteLine("(Terminator , $ , " + line_no);
                             }
 
                         }
+
+
+
+
+
+                         //region for operators
+
+                        #region
 
 
                         else if (temp_array[i] == '+' || temp_array[i] == '-' && i < temp_array.Count)
@@ -241,68 +258,129 @@ namespace filing
 
 
 
+                        #endregion
 
 
-                        else if (temp_array[i] == '~' && i < temp_array.Count)//constant
+
+                        //region for ribbon
+
+                        #region
+
+                        else if (temp_array[i] == '\"')   // Ribbon
                         {
-                            string temp = "~";
+                            string temp = "";
+                            int j;
+                            bool flag = false;
+                            int a = i;
 
-                            if (i + 1 < temp_array.Count)
+                            if (flag == false)
                             {
-                                if (temp_array[i + 1] == '\\')
+                                for (j = i; j < temp_array.Count; j++)
                                 {
-                                    temp += temp_array[i + 1]; //tostring
-                                    if (i + 2 < temp_array.Count)
+
+                                    if (j < temp_array.Count && temp_array[j] == '\"')
                                     {
-                                        temp += temp_array[i + 2];
+                                        if ((j - 1) >= 0 && temp_array[j - 1] != '\\')
+                                        {
+                                            temp += '\"';
+                                            a++;
+                                            flag = true;
+                                            break;
+                                        }
+                                        else
+                                        {
+
+                                            temp += temp_array[j];
+
+
+                                        }
+
                                     }
-                                    if (i + 3 < temp_array.Count)
+
+                                    else
                                     {
-                                        temp += temp_array[i + 3];
+                                        temp += temp_array[j];
+
                                     }
-                                }
-                                else
-                                {
-                                    temp += temp_array[i + 1];
-                                    if (i + 2 < temp_array.Count)
-                                    {
-                                        temp += temp_array[i + 2];
-                                    }
+
+                                    a++;
                                 }
                             }
+                            i = a - 1;
+                            flag = true;
+                            CheckRibbon(temp);
 
-
-                            Console.WriteLine(temp);
                         }
 
 
-                        //Ribbon
-
-                    //else if (temp_array[i] == '^'&&i<temp_array.Count)
-                        //{
-                        //   bool flag=false;
-                        //    string temp = "";
-                        //    int stop = 0;
-                        //    char ch = temp_array[i];
-                        //    while (stop==0 && i < temp_array.Count) //revolutionary line of code
-                        //    {
-
-                    //       temp += temp_array[i].ToString();
-                        //       if(i+1<temp_array.Count)
-                        //        ch = temp_array[i + 1];
-                        //       if (ch == '^')
-                        //       {
-
-                    //           break;
-                        //       }
-                        //        i++;
 
 
 
-                    //    }
+                        #endregion
 
-                    //    Console.WriteLine(temp);
-                        //}
+                        //regionforcharachter
+
+                        #region
+
+
+                        else if (temp_array[i] == '\'' && i < temp_array.Count)//character
+                        {
+                            
+
+                            for (int z = 0; z < temp_array.Count; z++)
+                            {
+                                //Console.WriteLine(temp_array[z]);
+                            }
+
+                            string temp = "\'";
+
+
+
+                            if (i + 1 < temp_array.Count && temp_array[i + 1] == '\\')
+                            {
+
+                                
+                                temp += temp_array[i + 1]; //tostring
+                                
+
+                                if (i + 2 < temp_array.Count)
+                                {
+                                    temp += temp_array[i + 2];
+                                    
+
+                                }
+                                if (i + 3 < temp_array.Count)
+                                {
+                                    temp += temp_array[i + 3];
+                                    i += 3;
+                                    Console.WriteLine("( Char , "+ temp + " ," +line_no +" )" );
+                                    
+                                    break;
+                                    }
+
+                            }
+                            else if (i + 1 < temp_array.Count && temp_array[i + 1] != '\\')
+                            {
+                                temp += temp_array[i + 1];
+                                if (i + 2 < temp_array.Count)
+                                {
+                                    temp += temp_array[i + 2];
+                                    i += 2;// verify it 
+                                }
+                            }
+                            //Console.WriteLine(temp);
+                            CheckChar(temp);
+                            
+
+                            
+                          
+                        }
+
+
+
+                        #endregion
+
+
 
 
 
@@ -332,14 +410,14 @@ namespace filing
                         else if (temp_array[i] == ',')
                             Console.WriteLine("(,  ," + line_no + ')');//comma
                         else if (temp_array[i] == '(')
-                            Console.WriteLine("((," + line_no + ')');//(
+                            Console.WriteLine("( ( , " + line_no + " )");//(
                         else if (temp_array[i] == ')')
-                            Console.WriteLine("()," + line_no + ')');//(
+                            Console.WriteLine("( ) , " + line_no + " )");//(
                         else if (temp_array[i] == ':')
-                            Console.WriteLine(":," + line_no + ')');//(
-                       else if (temp_array[i] == '$')
+                            Console.WriteLine("( : , " + line_no + " )");//(
+                        else if (temp_array[i] == '$')
                         {
-                            Console.WriteLine("Terminator,$," + line_no);
+                            Console.WriteLine("( Terminator , $ ," + line_no + " )");
                         }
 
 
@@ -349,13 +427,13 @@ namespace filing
                         }
                         else
                         {
-                            Console.WriteLine("error at"+line_no+" character = "+temp_array[i]  );
+                            Console.WriteLine("Lexical error at line no " + line_no + " character = " + temp_array[i]);
                         }
 
 
-                        
-                          
-                       
+
+
+
                     }
 
                 Continue:
@@ -364,7 +442,12 @@ namespace filing
             }
         }
 
-        
+
+
+        //region for REs
+
+        #region
+
 
         public void checkDAataType(string number)
         {
@@ -379,20 +462,72 @@ namespace filing
 
             else
 
-                Console.WriteLine("Lexical Error at line no" + line_no);
+                Console.WriteLine("Lexical Error at line no " + line_no);
 
         }
 
         public void CheckID(string ID)
         {
-            Regex regex = new Regex(@"^#(?!_)\w+$");     //character
+            //Regex regex = new Regex(@"^#(?!_)\w+$");
+            Regex regex = new Regex(@"^([a-z]+)([a-zA-Z0-9]*)$");     //identifier
             Match match = regex.Match(ID);
             if (match.Success)
-                Console.WriteLine("(" + "Identifier," + match.Value + "," + "," + line_no + ")");
+                Console.WriteLine("(" + "Identifier , " + match.Value + " ," + line_no + " )");
 
             else
                 Console.WriteLine("Lexical Error at line no" + line_no);
 
+
+        }
+
+
+        public void CheckChar(string word)
+        {
+
+            //word = "\"" + word + "\"";
+            bool found = false;
+            Regex regex1 = new Regex(@"^'(\w)'$");
+            Regex regex2 = new Regex(@"^'(\s)'$");
+            Match match1 = regex1.Match(word);
+            Match match2 = regex2.Match(word);
+
+            if (match1.Success)
+            {
+                Console.WriteLine("Valid");
+                found = true;
+            }
+
+            if (match2.Success)
+            {
+                Console.WriteLine("Valid");
+                found = true;
+            }
+
+            if (!found)
+            {
+                Console.WriteLine("invalid");
+            }
+            
+        }
+
+
+
+        public void CheckRibbon(string word) //string
+        {
+            Regex regex1 = new Regex(@"^""(.)*""$");
+
+            Match match1 = regex1.Match(word);
+
+            if (match1.Success)
+            {
+
+                Console.WriteLine('(' + "Ribbon ," + word + "," + line_no + ')');
+            }
+            else
+            {
+
+                Console.WriteLine("Lexical error  character=\"  at line no " + line_no);
+            }
 
         }
 
@@ -403,23 +538,20 @@ namespace filing
             {
                 if (word == KeywordsArray[i])
                 {
-                    
+
                     flag_for_keyword = true;
                 }
             }
             if (flag_for_keyword == true)
             {
-                Console.WriteLine('(' + word + "," + line_no + ')');
-               
+                Console.WriteLine("( Keyword , " + word + " , " + line_no + ')');
+
             }
             else
-                Console.WriteLine("error at line no "+ line_no );
-         
-
+                Console.WriteLine("Lexical error at line no " + line_no);
 
         }
-
-
+        #endregion
 
     }
 
