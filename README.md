@@ -325,11 +325,10 @@ namespace Nascent
 
                         else if (temp_array[i] == '\'' && i < temp_array.Count)//character
                         {
-                            
 
-                            for (int z = 0; z < temp_array.Count; z++)
+                             for (int z = 0; z < temp_array.Count; z++)
                             {
-                                //Console.WriteLine(temp_array[z]);
+                             //   Console.Write(temp_array[z]);
                             }
 
                             string temp = "\'";
@@ -349,14 +348,12 @@ namespace Nascent
                                     
 
                                 }
-                                if (i + 3 < temp_array.Count)
+                                if (i + 3 < temp_array.Count&&temp_array[i+3]=='\'')
                                 {
                                     temp += temp_array[i + 3];
                                     i += 3;
-                                    Console.WriteLine("( Char , "+ temp + " ," +line_no +" )" );
                                     
-                                    break;
-                                    }
+                                 }
 
                             }
                             else if (i + 1 < temp_array.Count && temp_array[i + 1] != '\\')
@@ -371,10 +368,7 @@ namespace Nascent
                             //Console.WriteLine(temp);
                             CheckChar(temp);
                             
-
-                            
-                          
-                        }
+                              }
 
 
 
@@ -468,8 +462,8 @@ namespace Nascent
 
         public void CheckID(string ID)
         {
-            //Regex regex = new Regex(@"^#(?!_)\w+$");
-            Regex regex = new Regex(@"^([a-z]+)([a-zA-Z0-9]*)$");     //identifier
+            Regex regex = new Regex(@"^#(?!_)\w+$");
+            //Regex regex = new Regex(@"^([a-z]+)([a-zA-Z0-9]*)$");     //identifier
             Match match = regex.Match(ID);
             if (match.Success)
                 Console.WriteLine("(" + "Identifier , " + match.Value + " ," + line_no + " )");
@@ -485,28 +479,31 @@ namespace Nascent
         {
 
             //word = "\"" + word + "\"";
-            bool found = false;
+            Console.WriteLine(word);
             Regex regex1 = new Regex(@"^'(\w)'$");
             Regex regex2 = new Regex(@"^'(\s)'$");
             Match match1 = regex1.Match(word);
             Match match2 = regex2.Match(word);
 
+            
             if (match1.Success)
             {
                 Console.WriteLine("Valid");
-                found = true;
+                
             }
 
             if (match2.Success)
             {
                 Console.WriteLine("Valid");
-                found = true;
+              
             }
 
-            if (!found)
+            else if(!match1.Success&&!match2.Success)
             {
                 Console.WriteLine("invalid");
             }
+            
+            
             
         }
 
