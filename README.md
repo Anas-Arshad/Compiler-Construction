@@ -11,19 +11,19 @@ namespace Nascent
     class Compiler
     {
 
-
+       
         static public int line_no = 0;
         // static int line_no_keywords = 0;
         string[] KeywordsArray = { "If", "Else", "Act", "Until", "Loop", "Array", "Fresh", "Wh", "Dec", "Ribbon", "Ch", "Common", "Personal", "Secure" };
         string[] Punctuator_Array = { ",", "->", "~", "^", "<<", ">>" };
         char[] wordbreakers = { '-', '+', '*', '/', '>', '<', '!', '@', '$', '^', '&', '(', ')', '{', '}', '[', ']', '=', '~', '^', '\n', ' ' };
-
+        List<string> tokens_to_print = new List<string>();
 
 
         public void Breaker()
         {
 
-
+            
            
             //Console.WriteLine(KeywordsArray.Length);
             char[] delimiter = { '\n', ' ' };
@@ -32,17 +32,6 @@ namespace Nascent
             StreamReader reader_for_keywords = new StreamReader(@"C:\Users\ana\Desktop\ReadMe.txt");
             while (!reader.EndOfStream)
             {
-                //string[] keywords = reader_for_keywords.ReadLine().Split(wordbreakers);//keywords
-                //line_no_keywords++;
-                //        foreach (string word in keywords)
-                //      {
-                //        CheckKeyword(word);
-
-
-                //  }
-
-
-
                 string[] words = reader.ReadLine().Split(delimiter);
 
 
@@ -59,6 +48,8 @@ namespace Nascent
                     for (int i = 0; i < temp_array.Count; i++)
                     {
 
+                        //for keywords and identifiers
+                        #region
                         if (temp_array[i] >= 65 && temp_array[i] <= 90)//kEYWORDS
                         {
                             bool flag = false;
@@ -82,32 +73,8 @@ namespace Nascent
                             CheckKeyword(temp);
 
                         }
-                        else
-                            if (temp_array[i] >= 97 && temp_array[i] <= 127)//kEYWORDS
-                            {
-                                bool flag = false;
-                                string temp = "";
-                                char ch = temp_array[i];
-                                int a = i;
-
-                                while (!wordbreakers.Contains(ch) && a < temp_array.Count) //revolutionary line of code
-                                {
-                                    temp += temp_array[a].ToString();
-                                    if (a + 1 < temp_array.Count)
-
-                                        ch = temp_array[a + 1];
-
-                                    a++;
-
-                                }
-                                i = a - 1;
-
-
-                                CheckID(temp);
-
-                            }
-
-                        else if (temp_array[i] == '#' && i < temp_array.Count)//check variable
+                  
+                        else if ((temp_array[i] >= 97 && temp_array[i] <= 127 || temp_array[i] == '#') && i < temp_array.Count)//check variable
                         {
                             bool flag = false;
                             string temp = "";
@@ -135,16 +102,18 @@ namespace Nascent
                             CheckID(temp);
                             if (flag == true)
                             {
-                                Console.WriteLine("(Terminator , $ , " + line_no);
+
+                                Console.WriteLine("(terminator , $ , " + line_no);
                             }
 
                         }
 
 
 
+                        #endregion
 
 
-                         //region for operators
+                        //region for operators
 
                         #region
 
@@ -166,7 +135,7 @@ namespace Nascent
                             }
                             else if ((i + 1) < temp_array.Count && temp_array[i] == '-' && temp_array[i + 1] == '>')// ->
                             {
-                                Console.WriteLine("(" + "RefOp" + ',' + ch + "" + temp_array[i + 1] + "," + line_no + ')');//->
+                                Console.WriteLine("(" + "REFOP" + ',' + ch + "" + temp_array[i + 1] + "," + line_no + ')');//->
                                 temp_array.RemoveAt(i + 1);
 
                             }
@@ -211,7 +180,7 @@ namespace Nascent
                             char ch = temp_array[i];
                             if ((i + 1) < temp_array.Count && temp_array[i + 1] == ch)//i+1 exsist?
                             {
-                                Console.WriteLine("(" + "Braces Open" + ',' + ch + "" + ch + "," + line_no + ')');//INCDEC
+                                Console.WriteLine("(" + "bracesOpen" + ',' + ch + "" + ch + "," + line_no + ')');//INCDEC
                                 temp_array.RemoveAt(i + 1);
                             }
                             else if ((i + 1) < temp_array.Count && temp_array[i + 1] == '=')//(i+1)<temp_array.Length&& 
@@ -227,7 +196,7 @@ namespace Nascent
                             char ch = temp_array[i];
                             if ((i + 1) < temp_array.Count && temp_array[i + 1] == ch)//i+1 exsist?
                             {
-                                Console.WriteLine("(" + "Braces Closed" + ',' + ch + "" + ch + "," + line_no + ')');//INCDEC
+                                Console.WriteLine("(" + "bracesClosed" + ',' + ch + "" + ch + "," + line_no + ')');//INCDEC
                                 temp_array.RemoveAt(i + 1);
                             }
                             else if ((i + 1) < temp_array.Count && temp_array[i + 1] == '=')//(i+1)<temp_array.Length&& 
@@ -401,17 +370,24 @@ namespace Nascent
                             checkDAataType(temp);
                             i = a - 1;
                         }
-                        else if (temp_array[i] == ',')
-                            Console.WriteLine("(,  ," + line_no + ')');//comma
+                                //****************
+                                //ALERT *****************
+                                //delimter used in syntax analyzer are comma and round brackets
+
+                                
+
+
+                        else if (temp_array[i] == ',')// , shoud be consider in syntax analyzer hint:delimiter 
+                            Console.WriteLine("( ,  ," + line_no + ')');//comma
                         else if (temp_array[i] == '(')
-                            Console.WriteLine("( ( , " + line_no + " )");//(
+                            Console.WriteLine("( ( ,  " + line_no + " )");//(
                         else if (temp_array[i] == ')')
                             Console.WriteLine("( ) , " + line_no + " )");//(
                         else if (temp_array[i] == ':')
                             Console.WriteLine("( : , " + line_no + " )");//(
                         else if (temp_array[i] == '$')
-                        {
-                            Console.WriteLine("( Terminator , $ ," + line_no + " )");
+                            {
+                            Console.WriteLine("( terminator , $ ," + line_no + " )");
                         }
 
 
@@ -449,10 +425,13 @@ namespace Nascent
             Regex regex_for_dec = new Regex(@"^([+-]?\d+)?\.\d+(e[+-]?\d+)?$");       //dec
             Match match_for_wh = regex_for_wh.Match(number);
             Match match_for_dec = regex_for_dec.Match(number);
-            if (match_for_wh.Success)
-                Console.WriteLine("(" + "WH_const," + match_for_wh.Value + "," + line_no + ")");
-            else if (match_for_dec.Success)
-                Console.WriteLine("(" + "Dec_const," + match_for_dec.Value + "," + line_no + ")");
+            if (match_for_dec.Success)
+                Console.WriteLine("(datatype,dec_constant," + line_no + ")");
+            else if (match_for_wh.Success)
+                Console.WriteLine("(datatype,wh_constant," + line_no + ")");
+                //Console.WriteLine("(" + "WH_const," + match_for_wh.Value + "," + line_no + ")");
+            
+                //Console.WriteLine("(" + "Dec_const," + match_for_dec.Value + "," + line_no + ")");
 
             else
 
@@ -462,14 +441,21 @@ namespace Nascent
 
         public void CheckID(string ID)
         {
-            Regex regex = new Regex(@"^#(?!_)\w+$");
+            Regex regex = new Regex(@"^([a-z]+)([a-zA-Z0-9_]*)$");
+            Regex regex1 = new Regex(@"^#(?!_)\w+$");
             //Regex regex = new Regex(@"^([a-z]+)([a-zA-Z0-9]*)$");     //identifier
             Match match = regex.Match(ID);
+            Match match1 = regex1.Match(ID);
             if (match.Success)
-                Console.WriteLine("(" + "Identifier , " + match.Value + " ," + line_no + " )");
+                Console.WriteLine("(" + "identifier , " + match.Value + " ," + line_no + " )");
+        //Console.WriteLine("(" + "Identifier , " + match.Value + " ," + line_no + " )");
 
             else
-                Console.WriteLine("Lexical Error at line no" + line_no);
+                if(match1.Success)
+                    Console.WriteLine("(" + "identifier , " + match1.Value + " ," + line_no + " )");
+                
+            else
+                    Console.WriteLine("Lexical Error at line no" + line_no);
 
 
         }
@@ -479,7 +465,6 @@ namespace Nascent
         {
 
             //word = "\"" + word + "\"";
-            Console.WriteLine(word);
             Regex regex1 = new Regex(@"^'(\w)'$");
             Regex regex2 = new Regex(@"^'(\s)'$");
             Match match1 = regex1.Match(word);
@@ -488,19 +473,19 @@ namespace Nascent
             
             if (match1.Success)
             {
-                Console.WriteLine("Valid");
+                Console.WriteLine("(datatype,char_constant,"+line_no+")");
                 
             }
 
             if (match2.Success)
             {
-                Console.WriteLine("Valid");
+                Console.WriteLine("(datatype,char_constant," + line_no + ")");
               
             }
 
             else if(!match1.Success&&!match2.Success)
             {
-                Console.WriteLine("invalid");
+                Console.WriteLine("Lexical error at line no : "+line_no);
             }
             
             
@@ -517,8 +502,8 @@ namespace Nascent
 
             if (match1.Success)
             {
-
-                Console.WriteLine('(' + "Ribbon ," + word + "," + line_no + ')');
+                Console.WriteLine('(' + "datatype," +  "Ribbon"+ "," + line_no + ')');
+                //Console.WriteLine('(' + "Ribbon ," + word + "," + line_no + ')');
             }
             else
             {
@@ -541,7 +526,8 @@ namespace Nascent
             }
             if (flag_for_keyword == true)
             {
-                Console.WriteLine("( Keyword , " + word + " , " + line_no + ')');
+                //Console.WriteLine("( Keyword , " + word + " , " + line_no + ')');
+                Console.WriteLine("("+word+","+ word + "," + line_no + ')');
 
             }
             else
