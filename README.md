@@ -11,7 +11,13 @@ namespace Nascent
     class Compiler
     {
 
-       
+        List<string> token_to_write = new List<string>();
+        string temp_token = "";
+        StreamWriter writer = new StreamWriter(@"C:\Users\ana\Desktop\WriteMe.txt");
+
+
+       Token t1 = new Token();//sytax class
+       Token tokenadd;
         static public int line_no = 0;
         // static int line_no_keywords = 0;
         string[] KeywordsArray = { "If", "Else", "Act", "Until", "Loop", "Array", "Fresh", "Wh", "Dec", "Ribbon", "Ch", "Common", "Personal", "Secure" };
@@ -104,6 +110,12 @@ namespace Nascent
                             {
 
                                 Console.WriteLine("(terminator , $ , " + line_no);
+                                
+
+                                tokenadd = new Token("terminator", "$", line_no);
+                                t1.token_array.Add(tokenadd);
+                                
+                            
                             }
 
                         }
@@ -124,24 +136,36 @@ namespace Nascent
                             if ((i + 1) < temp_array.Count && temp_array[i + 1] == ch)//i+1 exsist?
                             {
                                 Console.WriteLine("(" + "INCDEC" + ',' + ch + "" + ch + "," + line_no + ')');//INCDEC
+                                tokenadd = new Token("INCDEC", ch.ToString()+ch.ToString() , line_no);
+                                t1.token_array.Add(tokenadd);
+                                
                                 temp_array.RemoveAt(i + 1);
 
                             }
                             else if ((i + 1) < temp_array.Count && temp_array[i + 1] == '=')//(i+1) must exsist 
                             {
                                 Console.WriteLine("(" + "AOP" + ',' + ch + "" + temp_array[i + 1] + "," + line_no + ')');
+                                tokenadd = new Token("AOP", ch.ToString() + temp_array[i + 1].ToString(), line_no);
+                                t1.token_array.Add(tokenadd);
+                                
                                 temp_array.RemoveAt(i + 1);
 
                             }
                             else if ((i + 1) < temp_array.Count && temp_array[i] == '-' && temp_array[i + 1] == '>')// ->
                             {
                                 Console.WriteLine("(" + "REFOP" + ',' + ch + "" + temp_array[i + 1] + "," + line_no + ')');//->
+                                tokenadd = new Token("REFOP", "->", line_no);
+                                t1.token_array.Add(tokenadd);
+
                                 temp_array.RemoveAt(i + 1);
 
                             }
                             else
-
+                            {
                                 Console.WriteLine("(" + "ARP" + ',' + ch + "," + line_no + ')');//INCDEC
+                                tokenadd = new Token("ARP", ch.ToString() + ch.ToString(), line_no);
+                                t1.token_array.Add(tokenadd);
+                            }   
                         }
 
                         else if ((temp_array[i] == '*' || temp_array[i] == '/' || temp_array[i] == '%')
@@ -153,10 +177,16 @@ namespace Nascent
                             if ((i + 1) < temp_array.Count && temp_array[i + 1] == '=')//(i+1) must exsist
                             {
                                 Console.WriteLine("(" + "AOP" + ',' + ch + "" + temp_array[i + 1] + ',' + line_no + ')');
+                                tokenadd = new Token("AOP", ch.ToString() + temp_array[i + 1].ToString(), line_no);
+                                t1.token_array.Add(tokenadd);
+                                
                             }
                             else
                             {
                                 Console.WriteLine("(" + "MDM" + ',' + ch + ',' + line_no + ')');
+                                tokenadd = new Token("MDM", ch.ToString(), line_no);
+                                t1.token_array.Add(tokenadd);
+                            
                             }
                         }
 
@@ -168,10 +198,16 @@ namespace Nascent
                             if ((i + 1) < temp_array.Count && temp_array[i + 1] == '=')//(i+1) must exsist
                             {
                                 Console.WriteLine("(" + "ROP" + ',' + ch + "" + temp_array[i + 1] + ',' + line_no + ')');
+                                tokenadd = new Token("ROP", ch.ToString() + temp_array[i + 1].ToString(), line_no);
+                                t1.token_array.Add(tokenadd);
+                            
                             }
                             else
                             {
                                 Console.WriteLine("(" + "NOT" + ',' + ch + ',' + line_no + ')');
+                                tokenadd = new Token("NOT", "!", line_no);
+                                t1.token_array.Add(tokenadd);
+                            
                             }
                         }
 
@@ -180,32 +216,56 @@ namespace Nascent
                             char ch = temp_array[i];
                             if ((i + 1) < temp_array.Count && temp_array[i + 1] == ch)//i+1 exsist?
                             {
-                                Console.WriteLine("(" + "bracesOpen" + ',' + ch + "" + ch + "," + line_no + ')');//INCDEC
+                                Console.WriteLine("(" + "bracesopen" + ',' + ch + "" + ch + "," + line_no + ')');//INCDEC
+                                tokenadd = new Token("bracesopen", "<<", line_no);
+                                t1.token_array.Add(tokenadd);
+                            
                                 temp_array.RemoveAt(i + 1);
                             }
                             else if ((i + 1) < temp_array.Count && temp_array[i + 1] == '=')//(i+1)<temp_array.Length&& 
                             {
                                 Console.WriteLine("(" + "ROP" + ',' + ch + "" + temp_array[i + 1] + "," + line_no + ')');
+                                tokenadd = new Token("ROP", ch.ToString() + temp_array[i + 1].ToString(), line_no);
+                                t1.token_array.Add(tokenadd);
+
+
                                 temp_array.RemoveAt(i + 1);
                             }
                             else
+                            {
                                 Console.WriteLine("(" + "ROP" + ',' + ch + "," + line_no + ')');//INCDEC
+                                tokenadd = new Token("ROP", ch.ToString(), line_no);
+                                t1.token_array.Add(tokenadd);
+                            
+                            }
                         }
                         else if (temp_array[i] == '>' && i < temp_array.Count)//>> braces >
                         {
                             char ch = temp_array[i];
                             if ((i + 1) < temp_array.Count && temp_array[i + 1] == ch)//i+1 exsist?
                             {
-                                Console.WriteLine("(" + "bracesClosed" + ',' + ch + "" + ch + "," + line_no + ')');//INCDEC
+                                Console.WriteLine("(" + "bracesclosed" + ',' + ch + "" + ch + "," + line_no + ')');//INCDEC
+                                tokenadd = new Token("bracesclosed", ">>", line_no);
+                                t1.token_array.Add(tokenadd);
+
                                 temp_array.RemoveAt(i + 1);
                             }
                             else if ((i + 1) < temp_array.Count && temp_array[i + 1] == '=')//(i+1)<temp_array.Length&& 
                             {
                                 Console.WriteLine("(" + "ROP" + ',' + ch + "" + temp_array[i + 1] + "," + line_no + ')');
+
+                                tokenadd = new Token("ROP", ch.ToString() + temp_array[i + 1].ToString(), line_no);
+                                t1.token_array.Add(tokenadd);
+
                                 temp_array.RemoveAt(i + 1);
                             }
                             else
+                            {
                                 Console.WriteLine("(" + "ROP" + ',' + ch + "," + line_no + ')');//INCDEC
+                                tokenadd = new Token("ROP", ch.ToString(), line_no);
+                                t1.token_array.Add(tokenadd);
+                            
+                            }
                         }
 
 
@@ -216,11 +276,17 @@ namespace Nascent
                             {
 
                                 Console.WriteLine("(" + "ROP" + ',' + ch + "" + ch + "," + line_no + ')');//INCDEC
+                                tokenadd = new Token("ROP", "==", line_no);
+                                t1.token_array.Add(tokenadd);
+                            
                                 temp_array.RemoveAt(i + 1);
                             }
                             else
                             {
                                 Console.WriteLine("(" + "AOP" + ',' + ch + "," + line_no + ')');//INCDEC
+                                tokenadd = new Token("AOP","=", line_no);
+                                t1.token_array.Add(tokenadd);
+                            
                             }
                         }
 
@@ -295,9 +361,9 @@ namespace Nascent
                         else if (temp_array[i] == '\'' && i < temp_array.Count)//character
                         {
 
-                             for (int z = 0; z < temp_array.Count; z++)
+                            for (int z = 0; z < temp_array.Count; z++)
                             {
-                             //   Console.Write(temp_array[z]);
+                                //   Console.Write(temp_array[z]);
                             }
 
                             string temp = "\'";
@@ -307,22 +373,22 @@ namespace Nascent
                             if (i + 1 < temp_array.Count && temp_array[i + 1] == '\\')
                             {
 
-                                
+
                                 temp += temp_array[i + 1]; //tostring
-                                
+
 
                                 if (i + 2 < temp_array.Count)
                                 {
                                     temp += temp_array[i + 2];
-                                    
+
 
                                 }
-                                if (i + 3 < temp_array.Count&&temp_array[i+3]=='\'')
+                                if (i + 3 < temp_array.Count && temp_array[i + 3] == '\'')
                                 {
                                     temp += temp_array[i + 3];
                                     i += 3;
-                                    
-                                 }
+
+                                }
 
                             }
                             else if (i + 1 < temp_array.Count && temp_array[i + 1] != '\\')
@@ -336,8 +402,8 @@ namespace Nascent
                             }
                             //Console.WriteLine(temp);
                             CheckChar(temp);
-                            
-                              }
+
+                        }
 
 
 
@@ -370,24 +436,46 @@ namespace Nascent
                             checkDAataType(temp);
                             i = a - 1;
                         }
-                                //****************
-                                //ALERT *****************
-                                //delimter used in syntax analyzer are comma and round brackets
+                        //****************
+                        //ALERT *****************
+                        //delimter used in syntax analyzer are comma and round brackets
 
-                                
+
 
 
                         else if (temp_array[i] == ',')// , shoud be consider in syntax analyzer hint:delimiter 
+                        {
                             Console.WriteLine("( ,  ," + line_no + ')');//comma
+
+
+
+
+                            tokenadd = new Token(",", ",", line_no);
+                            t1.token_array.Add(tokenadd);
+                        }
                         else if (temp_array[i] == '(')
+                        {
                             Console.WriteLine("( ( ,  " + line_no + " )");//(
+                            tokenadd = new Token("(", "(", line_no);
+                            t1.token_array.Add(tokenadd);
+                        }
                         else if (temp_array[i] == ')')
+                        {
                             Console.WriteLine("( ) , " + line_no + " )");//(
+                            tokenadd = new Token(")", ")", line_no);
+                            t1.token_array.Add(tokenadd);
+                        }
                         else if (temp_array[i] == ':')
+                        {
                             Console.WriteLine("( : , " + line_no + " )");//(
+                            tokenadd = new Token(":", ":", line_no);
+                            t1.token_array.Add(tokenadd);
+                        }
                         else if (temp_array[i] == '$')
-                            {
+                        {
                             Console.WriteLine("( terminator , $ ," + line_no + " )");
+                            tokenadd = new Token("terminator", "$", line_no);
+                            t1.token_array.Add(tokenadd);
                         }
 
 
@@ -426,13 +514,21 @@ namespace Nascent
             Match match_for_wh = regex_for_wh.Match(number);
             Match match_for_dec = regex_for_dec.Match(number);
             if (match_for_dec.Success)
+            {
                 Console.WriteLine("(datatype,dec_constant," + line_no + ")");
+                tokenadd = new Token("datatype","dec_constant", line_no);
+                t1.token_array.Add(tokenadd);
+    
+            }
             else if (match_for_wh.Success)
+            {
                 Console.WriteLine("(datatype,wh_constant," + line_no + ")");
+                tokenadd = new Token("datatype", "wh_constant", line_no);
+                t1.token_array.Add(tokenadd);
                 //Console.WriteLine("(" + "WH_const," + match_for_wh.Value + "," + line_no + ")");
-            
-                //Console.WriteLine("(" + "Dec_const," + match_for_dec.Value + "," + line_no + ")");
 
+                //Console.WriteLine("(" + "Dec_const," + match_for_dec.Value + "," + line_no + ")");
+            }
             else
 
                 Console.WriteLine("Lexical Error at line no " + line_no);
@@ -447,14 +543,25 @@ namespace Nascent
             Match match = regex.Match(ID);
             Match match1 = regex1.Match(ID);
             if (match.Success)
+            {
                 Console.WriteLine("(" + "identifier , " + match.Value + " ," + line_no + " )");
-        //Console.WriteLine("(" + "Identifier , " + match.Value + " ," + line_no + " )");
+                tokenadd = new Token("identifier", match.Value, line_no);
+                t1.token_array.Add(tokenadd);
+
+            
+            
+            }
+            //Console.WriteLine("(" + "Identifier , " + match.Value + " ," + line_no + " )");
 
             else
-                if(match1.Success)
+                if (match1.Success)
+                {
                     Console.WriteLine("(" + "identifier , " + match1.Value + " ," + line_no + " )");
-                
-            else
+                    tokenadd = new Token("identifier", match1.Value, line_no);
+                    t1.token_array.Add(tokenadd);
+
+                }
+                else
                     Console.WriteLine("Lexical Error at line no" + line_no);
 
 
@@ -474,13 +581,17 @@ namespace Nascent
             if (match1.Success)
             {
                 Console.WriteLine("(datatype,char_constant,"+line_no+")");
-                
+
+                tokenadd = new Token("datatype","char_constant", line_no);
+                t1.token_array.Add(tokenadd);
             }
 
             if (match2.Success)
             {
                 Console.WriteLine("(datatype,char_constant," + line_no + ")");
-              
+
+                tokenadd = new Token("datatype", "char_constant", line_no);
+                t1.token_array.Add(tokenadd);
             }
 
             else if(!match1.Success&&!match2.Success)
@@ -503,6 +614,8 @@ namespace Nascent
             if (match1.Success)
             {
                 Console.WriteLine('(' + "datatype," +  "Ribbon"+ "," + line_no + ')');
+                tokenadd = new Token("datatype", "Ribbon", line_no);
+                t1.token_array.Add(tokenadd);
                 //Console.WriteLine('(' + "Ribbon ," + word + "," + line_no + ')');
             }
             else
@@ -528,6 +641,9 @@ namespace Nascent
             {
                 //Console.WriteLine("( Keyword , " + word + " , " + line_no + ')');
                 Console.WriteLine("("+word+","+ word + "," + line_no + ')');
+                
+                tokenadd = new Token(word, word, line_no);
+                t1.token_array.Add(tokenadd);
 
             }
             else
@@ -535,6 +651,47 @@ namespace Nascent
 
         }
         #endregion
+
+
+
+        public void display()//calls Display method of Class Token
+        {
+            t1.Display();
+        }
+    }
+       class Token
+    {
+        public List<Token> token_array = new List<Token>();
+        string cp;
+        string vp;
+        int line_number;
+
+
+        public Token()
+        {
+
+
+        }
+        public Token(string p_cp, string p_vp, int p_line_no)
+        {
+            cp = p_cp;
+            vp = p_vp;
+            line_number = p_line_no;
+
+
+        }
+
+
+        public void Display()
+        {
+            Console.WriteLine("*****************Syntax Analyzer*************");
+            for (int i = 0; i < token_array.Count; i++)
+            {
+
+                
+                Console.WriteLine(token_array[i].cp+","+token_array[i].line_number );
+            }
+        }
 
     }
 
@@ -545,6 +702,7 @@ namespace Nascent
 
             Compiler c1 = new Compiler();
             c1.Breaker();
+            c1.display();
 
 
 
